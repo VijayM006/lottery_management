@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}Predict — Kerala Lottery Analyzer{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <h1 class="page-title">Number Predictions</h1>
+  <p class="page-subtitle">3 smart strategies based on historical data</p>
+</div>
+
+<!-- DISCLAIMER -->
+<div class="glass-card fade-in" style="border-color:rgba(255,159,28,0.3); margin-bottom:2rem; padding:1.25rem 1.5rem;">
+  <p style="font-size:0.85rem; color:var(--text-muted); line-height:1.7; text-align:center;">
+    ⚠️ &nbsp; <strong style="color:var(--amber);">Disclaimer:</strong>
+    Lottery draws are random events. These predictions are based on historical frequency analysis only
+    and do not guarantee any winning outcome. Play responsibly.
+  </p>
+</div>
+
+<!-- PREDICTION CARDS -->
+<div class="predict-grid">
+
+  <!-- Strategy 1: Hot Pick -->
+  <div class="predict-card hot-strategy fade-in">
+    <div style="font-size:2.5rem; margin-bottom:0.5rem; filter:drop-shadow(0 0 12px rgba(255,100,0,0.6));">🔥</div>
+    <div class="predict-title">Hot Pick</div>
+    <div class="predict-desc">Top 6 numbers drawn most frequently in all past results</div>
+    <div class="predict-numbers">
+      {% for num in hot_pick %}
+        <span class="number-badge hot lg">{{ num }}</span>
+      {% endfor %}
+    </div>
+    <button
+      class="btn btn-ghost btn-sm"
+      data-copy="{{ hot_pick | join(', ') }}"
+      style="font-size:0.75rem;"
+    >📋 Copy Numbers</button>
+    <div class="predict-note">
+      Based on highest draw frequency. Numbers that appeared most often historically.
+    </div>
+  </div>
+
+  <!-- Strategy 2: Mixed Pick -->
+  <div class="predict-card mix-strategy fade-in">
+    <div style="font-size:2.5rem; margin-bottom:0.5rem; filter:drop-shadow(0 0 12px rgba(245,200,66,0.6));">⚖️</div>
+    <div class="predict-title">Mixed Pick</div>
+    <div class="predict-desc">4 hot numbers blended with 2 cold numbers for balance</div>
+    <div class="predict-numbers">
+      {% for num in mixed_pick[:4] %}
+        <span class="number-badge hot lg">{{ num }}</span>
+      {% endfor %}
+      {% for num in mixed_pick[4:] %}
+        <span class="number-badge cold lg">{{ num }}</span>
+      {% endfor %}
+    </div>
+    <button
+      class="btn btn-ghost btn-sm"
+      data-copy="{{ mixed_pick | join(', ') }}"
+      style="font-size:0.75rem;"
+    >📋 Copy Numbers</button>
+    <div class="predict-note">
+      🔥 Hot numbers (orange) + ❄️ Cold numbers (blue). A balanced approach.
+    </div>
+  </div>
+
+  <!-- Strategy 3: Weighted Random -->
+  <div class="predict-card rand-strategy fade-in">
+    <div style="font-size:2.5rem; margin-bottom:0.5rem; filter:drop-shadow(0 0 12px rgba(0,245,212,0.6));">🎲</div>
+    <div class="predict-title">Weighted Random</div>
+    <div class="predict-desc">Randomly selected where frequent numbers have higher probability</div>
+    <div class="predict-numbers">
+      {% for num in weighted_pick %}
+        <span class="number-badge lg" style="background: radial-gradient(circle at 35% 35%, #89d8ff, #1a6fff); color:#fff; box-shadow:0 4px 15px rgba(26,111,255,0.5);">{{ num }}</span>
+      {% endfor %}
+    </div>
+    <button
+      class="btn btn-ghost btn-sm"
+      data-copy="{{ weighted_pick | join(', ') }}"
+      style="font-size:0.75rem;"
+    >📋 Copy Numbers</button>
+    <div class="predict-note">
+      Weighted randomness — each draw re-generates different numbers. Refresh for a new pick.
+    </div>
+  </div>
+
+</div>
+
+<!-- REGENERATE -->
+<div class="text-center mt-4" style="margin-bottom:1rem;">
+  <a href="{{ url_for('predict') }}" class="btn btn-gold">🔄 Regenerate Predictions</a>
+  <a href="{{ url_for('analysis') }}" class="btn btn-ghost" style="margin-left:0.75rem;">📊 View Analysis</a>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="glass-card fade-in mt-4">
+  <h3 class="section-title">💡 How Predictions Work</h3>
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:1.5rem;">
+
+    <div style="text-align:center; padding:1.25rem;">
+      <div style="font-size:2rem; margin-bottom:0.75rem;">🔥</div>
+      <div style="font-family:var(--font-display); font-size:0.85rem; color:var(--gold); margin-bottom:0.5rem; text-transform:uppercase; letter-spacing:0.1em;">Hot Pick</div>
+    </div>
+
+    <div style="text-align:center; padding:1.25rem;">
+      <div style="font-size:2rem; margin-bottom:0.75rem;">⚖️</div>
+      <div style="font-family:var(--font-display); font-size:0.85rem; color:var(--gold); margin-bottom:0.5rem; text-transform:uppercase; letter-spacing:0.1em;">Mixed Pick</div>
+      <p style="font-size:0.82rem; color:var(--text-muted); line-height:1.6;">Takes 4 from the top and 2 from the bottom of frequency rankings.</p>
+    </div>
+
+    <div style="text-align:center; padding:1.25rem;">
+      <div style="font-size:2rem; margin-bottom:0.75rem;">🎲</div>
+      <div style="font-family:var(--font-display); font-size:0.85rem; color:var(--gold); margin-bottom:0.5rem; text-transform:uppercase; letter-spacing:0.1em;">Weighted Random</div>
+      <p style="font-size:0.82rem; color:var(--text-muted); line-height:1.6;">Uses Python's random.choices() with draw counts as weights. More frequent = higher chance.</p>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Kerala Lottery Analyzer{% endblock %}</title>
+  <meta name="description" content="Analyze and predict Kerala Lottery winning numbers using frequency analysis." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet"
+     href="{{ url_for('static', filename='css/style.css') }}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- Particle Canvas -->
+<canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+<div class="wrapper">
+
+  <!-- ── NAVBAR ── -->
+  <nav class="navbar">
+    <!-- Change this line in base.html nav -->
+   <li><a href="{{ url_for('fetch_api') }}">🌐 Fetch Latest</a>
+      <div class="ball-icon">KL</div>
+      Kerala Lottery
+   </li>
+
+    <ul class="nav-links" id="nav-links">
+      <li><a href="{{ url_for('home') }}">Home</a></li>
+      <li><a href="{{ url_for('scrape') }}">Scrape</a></li>
+      <li><a href="{{ url_for('fetch_api') }}">API Fetch</a></li>
+      <li><a href="{{ url_for('results') }}">Results</a></li>
+      <li><a href="{{ url_for('analysis') }}">Analysis</a></li>
+      <li><a href="{{ url_for('predict') }}">Predict</a></li>
+    </ul>
+
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ── FLASH MESSAGES ── -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-container">
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <!-- ── PAGE CONTENT ── -->
+  <main class="page-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    Kerala Lottery Analyzer &nbsp;·&nbsp; Built with <span>Flask</span> &amp; <span>MySQL</span>
+    &nbsp;·&nbsp; For educational purposes only
+  </footer>
+
+</div>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

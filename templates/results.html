@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}All Results — Kerala Lottery Analyzer{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <h1 class="page-title">All Results</h1>
+  <p class="page-subtitle">{{ rows | length }} records in database</p>
+</div>
+
+<!-- Quick Actions Bar -->
+<div class="flex-between mb-3">
+  <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+    <a href="{{ url_for('scrape') }}"       class="btn btn-ghost btn-sm">🕷️ Scrape</a>
+    <a href="{{ url_for('fetch_api') }}"    class="btn btn-ghost btn-sm">🌐 API Fetch</a>
+  </div>
+  <!-- Filter -->
+  <input
+    type="text"
+    id="filter-input"
+    class="form-control"
+    placeholder="Filter results..."
+    style="max-width: 240px; padding: 0.45rem 0.9rem; font-size:0.85rem;"
+  />
+</div>
+
+{% if rows %}
+<div class="glass-card fade-in" style="padding: 0;">
+  <div class="table-wrap">
+    <table id="results-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Lottery Name</th>
+          <th>Draw Date</th>
+          <th>Winning Numbers</th>
+          <th>Source</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+        <tr>
+          <td class="text-muted" style="font-family:var(--font-display); font-size:0.8rem;">{{ row.id }}</td>
+          <td style="font-weight:600; color:var(--text-bright);">{{ row.lottery_name }}</td>
+          <td class="text-muted">
+            <span style="font-family:var(--font-display); font-size:0.85rem;">{{ row.draw_date }}</span>
+          </td>
+          <td>
+            <div class="numbers-row">
+              {% for num in row.numbers.split(',') %}
+                <span class="number-badge" style="width:34px;height:34px;font-size:0.72rem;">{{ num.strip() }}</span>
+              {% endfor %}
+            </div>
+          </td>
+          <td>
+            <span class="badge badge-{{ row.source }}">{{ row.source }}</span>
+          </td>
+          <td>
+            <a
+              href="{{ url_for('delete_result', result_id=row.id) }}"
+              class="btn btn-danger btn-sm"
+              onclick="return confirm('Delete this record?')"
+            >🗑 Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% else %}
+<div class="glass-card fade-in">
+  <div class="empty-state">
+    <div class="empty-icon">📭</div>
+    <h3>No Results Found</h3>
+    <p>Your database is empty. Start collecting lottery data.</p>
+    <div class="flex-center mt-3">
+      <a href="{{ url_for('scrape') }}" class="btn btn-ghost">Scrape Now</a>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Live filter
+const filterInput  = document.getElementById('filter-input');
+const tableRows    = document.querySelectorAll('#results-table tbody tr');
+
+if (filterInput) {
+  filterInput.addEventListener('input', () => {
+    const q = filterInput.value.toLowerCase();
+    tableRows.forEach(row => {
+      row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+  });
+}
+</script>
+{% endblock %}

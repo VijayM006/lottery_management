@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block title %}Home — Kerala Lottery Analyzer{% endblock %}
+
+{% block content %}
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-orb">
+    <div class="orb-number" id="orb-number" data-target="{{ total }}">0</div>
+  </div>
+
+  <h1 class="hero-title">Kerala Lottery<br>Analyzer</h1>
+  <p class="hero-tagline">Frequency · Pattern · Prediction</p>
+  <div class="hero-divider"></div>
+  <p style="color: var(--text-muted); font-size: 0.95rem; max-width: 520px; margin: 0 auto; line-height: 1.7;">
+    Collect, analyze and explore winning number patterns from Kerala State Lotteries.
+    Three data sources, one powerful dashboard.
+  </p>
+</section>
+
+<!-- ── STATS ── -->
+<div class="stats-grid">
+  <div class="stat-card fade-in">
+    <span class="stat-icon">🎱</span>
+    <div class="stat-value">{{ total }}</div>
+    <div class="stat-label">Total Records</div>
+  </div>
+  <div class="stat-card fade-in">
+    <span class="stat-icon">📅</span>
+    <div class="stat-value">{{ recent | length }}</div>
+    <div class="stat-label">Recent Draws</div>
+  </div>
+  <div class="stat-card fade-in">
+    <span class="stat-icon">🔥</span>
+    <div class="stat-value">3</div>
+    <div class="stat-label">Sources Active</div>
+  </div>
+  <div class="stat-card fade-in">
+    <span class="stat-icon">🎯</span>
+    <div class="stat-value">3</div>
+    <div class="stat-label">Predict Strategies</div>
+  </div>
+</div>
+
+<!-- ── QUICK ACTIONS ── -->
+<h2 class="section-title">⚡ Quick Actions</h2>
+<div class="action-grid">
+
+
+  <a href="{{ url_for('scrape') }}" class="action-card fade-in">
+    <div class="action-icon">🕷️</div>
+    <div class="action-title">Scrape Website</div>
+    <div class="action-desc">Auto-scrape latest Kerala Lottery results from the official site</div>
+    <span class="btn btn-ghost btn-sm mt-2">Scrape Now →</span>
+  </a>
+
+  <a href="{{ url_for('fetch_api') }}" class="action-card fade-in">
+    <div class="action-icon">🌐</div>
+    <div class="action-title">API Fetch</div>
+    <div class="action-desc">Pull lottery data from RapidAPI and store in your database</div>
+    <span class="btn btn-ghost btn-sm mt-2">Fetch Data →</span>
+  </a>
+
+  <a href="{{ url_for('analysis') }}" class="action-card fade-in">
+    <div class="action-icon">📊</div>
+    <div class="action-title">Analysis</div>
+    <div class="action-desc">Explore hot, cold numbers and full frequency breakdown</div>
+    <span class="btn btn-ghost btn-sm mt-2">Analyze →</span>
+  </a>
+
+  <a href="{{ url_for('predict') }}" class="action-card fade-in">
+    <div class="action-icon">🔮</div>
+    <div class="action-title">Predict</div>
+    <div class="action-desc">Get suggested number combinations using 3 smart strategies</div>
+    <span class="btn btn-gold btn-sm mt-2">Predict Now →</span>
+  </a>
+
+  <a href="{{ url_for('results') }}" class="action-card fade-in">
+    <div class="action-icon">📋</div>
+    <div class="action-title">All Results</div>
+    <div class="action-desc">Browse all collected lottery results stored in your database</div>
+    <span class="btn btn-ghost btn-sm mt-2">View All →</span>
+  </a>
+
+</div>
+
+<!-- ── RECENT RESULTS ── -->
+{% if recent %}
+<h2 class="section-title">🕐 Recent Results</h2>
+<div class="glass-card fade-in">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Lottery Name</th>
+          <th>Draw Date</th>
+          <th>Winning Numbers</th>
+          <th>Source</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in recent %}
+        <tr>
+          <td class="text-muted" style="font-family: var(--font-display);">{{ row.id }}</td>
+          <td style="font-weight:600; color: var(--text-bright);">{{ row.lottery_name }}</td>
+          <td class="text-muted">{{ row.draw_date }}</td>
+          <td>
+            <div class="numbers-row">
+              {% for num in row.numbers.split(',') %}
+                <span class="number-badge" style="width:36px;height:36px;font-size:0.75rem;">{{ num.strip() }}</span>
+              {% endfor %}
+            </div>
+          </td>
+          <td>
+            <span class="badge badge-{{ row.source }}">{{ row.source }}</span>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="mt-3 text-center">
+    <a href="{{ url_for('results') }}" class="btn btn-ghost btn-sm">View All Results →</a>
+  </div>
+</div>
+{% else %}
+<div class="glass-card fade-in">
+  <div class="empty-state">
+    <div class="empty-icon">🎱</div>
+    <h3>No Results Yet</h3>
+    <div class="flex-center mt-3">
+      <a href="{{ url_for('scrape') }}" class="btn btn-ghost">Scrape Now</a>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% endblock %}

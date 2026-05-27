@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}Analysis — Kerala Lottery Analyzer{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <h1 class="page-title">Number Analysis</h1>
+  <p class="page-subtitle">{{ total_draws }} numbers analyzed across all draws</p>
+</div>
+
+<!-- HOT & COLD NUMBERS -->
+<div class="hc-grid">
+
+  <!-- HOT NUMBERS -->
+  <div class="hc-card hot-card fade-in">
+    <div class="hc-title">🔥 Hot Numbers <span style="font-size:0.7rem; color:var(--text-muted); font-family:var(--font-body);">(Most Drawn)</span></div>
+    <div class="numbers-row">
+      {% for num, count in hot_numbers %}
+        <div style="text-align:center;">
+          <span class="number-badge hot lg">{{ num }}</span>
+          <div style="font-size:0.65rem; color:var(--text-muted); margin-top:4px; font-weight:600;">×{{ count }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- COLD NUMBERS -->
+  <div class="hc-card cold-card fade-in">
+    <div class="hc-title">❄️ Cold Numbers <span style="font-size:0.7rem; color:var(--text-muted); font-family:var(--font-body);">(Least Drawn)</span></div>
+    <div class="numbers-row">
+      {% for num, count in cold_numbers %}
+        <div style="text-align:center;">
+          <span class="number-badge cold lg">{{ num }}</span>
+          <div style="font-size:0.65rem; color:var(--text-muted); margin-top:4px; font-weight:600;">×{{ count }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+
+<!-- FREQUENCY TABLE -->
+<h2 class="section-title">📊 Full Frequency Chart</h2>
+<div class="glass-card fade-in">
+  {% if frequency %}
+    {% set max_count = frequency[0][1] %}
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.75rem;">
+      {% for num, count in frequency %}
+      <div style="display:flex; align-items:center; gap:0.85rem; padding:0.6rem 0.5rem; border-radius:8px; transition: background 0.2s;" onmouseover="this.style.background='rgba(245,200,66,0.06)'" onmouseout="this.style.background=''">
+        <span class="number-badge" style="width:38px;height:38px;font-size:0.78rem;flex-shrink:0;">{{ num }}</span>
+        <div class="freq-bar-wrap" style="flex:1;">
+          <div class="freq-bar-bg">
+            <div class="freq-bar-fill" data-width="{{ (count / max_count * 100) | round(1) }}" style="width:0%;"></div>
+          </div>
+          <span class="freq-count">{{ count }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <div class="empty-icon">📊</div>
+      <h3>No Data for Analysis</h3>
+      <p>Add some lottery results first.</p>
+      <a href="{{ url_for('manual_entry') }}" class="btn btn-gold mt-3">Add Results</a>
+    </div>
+  {% endif %}
+</div>
+
+<!-- QUICK STAT SUMMARY -->
+{% if frequency %}
+<div class="stats-grid mt-4">
+  <div class="stat-card fade-in">
+    <span class="stat-icon">🏆</span>
+    <div class="stat-value" style="font-size:1.8rem;">{{ frequency[0][0] }}</div>
+    <div class="stat-label">Most Drawn Number</div>
+  </div>
+  <div class="stat-card fade-in">
+    <span class="stat-icon">❄️</span>
+    <div class="stat-value" style="font-size:1.8rem;">{{ frequency[-1][0] }}</div>
+    <div class="stat-label">Least Drawn Number</div>
+  </div>
+  <div class="stat-card fade-in">
+    <span class="stat-icon">🎱</span>
+    <div class="stat-value" style="font-size:1.8rem;">{{ frequency | length }}</div>
+    <div class="stat-label">Unique Numbers</div>
+  </div>
+  <div class="stat-card fade-in">
+    <span class="stat-icon">📈</span>
+    <div class="stat-value" style="font-size:1.8rem;">{{ frequency[0][1] }}</div>
+    <div class="stat-label">Highest Frequency</div>
+  </div>
+</div>
+{% endif %}
+
+<div class="text-center mt-4">
+  <a href="{{ url_for('predict') }}" class="btn btn-gold">🔮 Go to Predictions →</a>
+</div>
+
+{% endblock %}
